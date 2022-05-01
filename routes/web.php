@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,8 +29,26 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
     // Admin Login Route tanpa admin group
     Route::match(['get','post'],'login','AdminController@login');
 
-    // Admin Dashboard Route tanpa admin grub
-    Route::match(['get','post'],'dashboard','AdminController@dashboard');
+    Route::group(['middleware'=>['admin']],function(){
+        // Admin Dashboard Route tanpa admin grub
+        Route::get('dashboard','AdminController@dashboard');
+       
+        // update password admin
+        Route::match(['get','post'],'update-admin-password','AdminController@updateAdminPassword');
+        
+        //Check Admin Password
+        Route::post('check-admin-password','AdminController@checkAdminPassword');
+        
+        //Update Admin Details
+        Route::match(['get','post'],'update-admin-details','AdminController@updateAdminDetails');
+
+        //Update Vendor Details
+        Route::match(['get','post'],'update-vendor-details/{slug}','AdminController@updateVendorDetails');
+
+        //Admin Logout
+        Route::get('logout','AdminController@logout');
+    });
+
 
 });
 
